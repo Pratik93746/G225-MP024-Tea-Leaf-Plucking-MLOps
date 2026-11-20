@@ -1,0 +1,13 @@
+# MLflow model-file folders (the tool reads only mlflow.db, which IS committed)
+mlruns/
+mlartifacts/
+
+# python / tools
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.DS_Store
+
+# the CSVs are versioned by DVC (see data/raw/*.dvc), not by git

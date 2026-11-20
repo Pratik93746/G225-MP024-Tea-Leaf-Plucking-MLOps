@@ -1,0 +1,56 @@
+# All settings for the MP024 pipeline. Every script reads this file with yaml.safe_load
+# (see src/mp024/config.py), so nothing below is hard-coded in the code.
+
+paths:
+  train_csv: data/raw/train.csv
+  later_csv: data/raw/later.csv
+  holdout_csv: data/raw/holdout_features.csv
+  model_path: models/model.joblib
+  model_info_path: models/model_info.json
+  predictions_path: predictions/holdout_predictions.csv
+  data_issues_path: reports/data_issues.json
+  monitoring_path: reports/monitoring.json
+  findings_path: reports/findings.yaml
+
+ids:
+  group_id: G225
+  problem_id: MP024
+
+data:
+  id_column: record_id
+  date_column: date
+  target: kg_per_worker
+  group_column: section          # the "office" column used for the unit check and the per-group MAE
+  numeric_features: [worker_exp_yr, rain_mm_week, slope_deg, temp_c, bush_age_yr, hours_worked]
+  categorical_features: [flush, section]
+
+data_checks:
+  leak_min_spearman: 0.95        # a column missing from holdout AND this correlated with the target
+  unit_ratio_trigger: 5.0        # group median this many times bigger/smaller than the others
+  sentinel_min_count: 3
+  stuck_min_rows: 10             # a run of identical readings at least this long ...
+  stuck_min_days: 3              # ... and spanning at least this many different dates
+  typo_gap_ratio: 2.0            # upper-half jump between neighbouring sorted targets
+  typo_factor: 10.0              # typos are "ten times too big"
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: mp024-tea-leaf-plucking
+  registered_model_name: mp024-kg-per-worker
+  champion_alias: champion
+
+training:
+  seed: 42
+  cv_folds: 5
+  candidates:                    # every candidate becomes one MLflow run
+    - {name: ridge_linear,    kind: ridge, alpha: 1.0,  poly_degree: 1}
+    - {name: ridge_poly2_a1,  kind: ridge, alpha: 1.0,  poly_degree: 2}
+    - {name: ridge_poly2_a10, kind: ridge, alpha: 10.0, poly_degree: 2}
+    - {name: gbr_depth3,      kind: gbr,   n_estimators: 300, max_depth: 3, learning_rate: 0.05}
+    - {name: hgb_300,         kind: hgb,   max_iter: 300, learning_rate: 0.05}
+    - {name: rf_300,          kind: rf,    n_estimators: 300, min_samples_leaf: 2}
+
+monitoring:
+  psi_bins: 10
+  later_train_fraction: 0.7      # first 70% of later.csv (by date) goes into v2's training data
+  promotion_min_improvement: 0.15  # promote v2 only if its MAE is at least 15% lower than v1's

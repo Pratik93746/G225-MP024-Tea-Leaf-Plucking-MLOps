@@ -1,0 +1,183 @@
+{
+  "data_issues": {
+    "leaking_column": {
+      "present": true,
+      "column": "kg_weighed_at_factory"
+    },
+    "unit_mixup": {
+      "present": true,
+      "column": "rain_mm_week",
+      "group_value": "River Side",
+      "factor": 0.1
+    },
+    "sentinel_value": {
+      "present": true,
+      "column": "worker_exp_yr",
+      "value": 9999,
+      "count": 40
+    },
+    "duplicate_rows": {
+      "present": false,
+      "count": null
+    },
+    "stuck_sensor": {
+      "present": false,
+      "column": null,
+      "start_date": null,
+      "end_date": null
+    },
+    "target_typos": {
+      "present": true,
+      "count": 9
+    },
+    "spelling_variants": {
+      "present": true,
+      "column": "flush",
+      "true_levels": 3
+    }
+  },
+  "evidence": {
+    "leaking_column": {
+      "missing_from_holdout": [
+        "kg_weighed_at_factory"
+      ],
+      "spearman_with_target": {
+        "kg_weighed_at_factory": 0.9833
+      }
+    },
+    "unit_mixup": {
+      "group_median_ratio_vs_other_groups": {
+        "worker_exp_yr | Lower Garden": 0.933,
+        "worker_exp_yr | River Side": 1.133,
+        "worker_exp_yr | Upper Garden": 1.0,
+        "rain_mm_week | Lower Garden": 1.0,
+        "rain_mm_week | River Side": 0.098,
+        "rain_mm_week | Upper Garden": 1.046,
+        "slope_deg | Lower Garden": 1.0,
+        "slope_deg | River Side": 0.944,
+        "slope_deg | Upper Garden": 1.0,
+        "temp_c | Lower Garden": 1.002,
+        "temp_c | River Side": 0.95,
+        "temp_c | Upper Garden": 1.0,
+        "bush_age_yr | Lower Garden": 1.0,
+        "bush_age_yr | River Side": 0.932,
+        "bush_age_yr | Upper Garden": 1.023,
+        "hours_worked | Lower Garden": 1.0,
+        "hours_worked | River Side": 1.0,
+        "hours_worked | Upper Garden": 0.986
+      }
+    },
+    "sentinel_value": {
+      "candidates_found": {
+        "worker_exp_yr=9": {
+          "count": 39,
+          "outside_normal_range": false
+        },
+        "worker_exp_yr=9999": {
+          "count": 40,
+          "outside_normal_range": true
+        },
+        "rain_mm_week=99": {
+          "count": 4,
+          "outside_normal_range": false
+        },
+        "slope_deg=9": {
+          "count": 22,
+          "outside_normal_range": false
+        },
+        "bush_age_yr=9": {
+          "count": 12,
+          "outside_normal_range": false
+        },
+        "hours_worked=9": {
+          "count": 14,
+          "outside_normal_range": false
+        }
+      }
+    },
+    "duplicate_rows": {
+      "duplicated_rows_as_given": 0,
+      "duplicated_rows_ignoring_record_id": 0,
+      "duplicated_record_ids": 0
+    },
+    "stuck_sensor": {
+      "longest_run_per_column": {
+        "worker_exp_yr": {
+          "value": 13.0,
+          "rows": 3,
+          "days": 1
+        },
+        "rain_mm_week": {
+          "value": 29.0,
+          "rows": 2,
+          "days": 1
+        },
+        "slope_deg": {
+          "value": 32.0,
+          "rows": 2,
+          "days": 2
+        },
+        "temp_c": {
+          "value": 11.0,
+          "rows": 2,
+          "days": 2
+        },
+        "bush_age_yr": {
+          "value": 43.0,
+          "rows": 2,
+          "days": 2
+        },
+        "hours_worked": {
+          "value": 5.1,
+          "rows": 2,
+          "days": 1
+        }
+      }
+    },
+    "target_typos": {
+      "largest_normal_value": 53.7,
+      "typo_values": [
+        206.0,
+        211.0,
+        241.0,
+        258.0,
+        264.0,
+        299.0,
+        346.0,
+        352.0,
+        367.0
+      ],
+      "typo_values_divided_by_factor": [
+        20.6,
+        21.1,
+        24.1,
+        25.8,
+        26.4,
+        29.9,
+        34.6,
+        35.2,
+        36.7
+      ]
+    },
+    "spelling_variants": {
+      "raw_vs_clean_levels": {
+        "flush": {
+          "raw_distinct": 18,
+          "clean_levels": [
+            "first",
+            "monsoon",
+            "second"
+          ]
+        },
+        "section": {
+          "raw_distinct": 3,
+          "clean_levels": [
+            "Lower Garden",
+            "River Side",
+            "Upper Garden"
+          ]
+        }
+      }
+    }
+  }
+}
