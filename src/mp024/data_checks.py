@@ -14,7 +14,11 @@ import json
 import numpy as np
 import pandas as pd
 
-from mp024.cleaning import normalise_text
+import re
+
+def normalise_text(value) -> str:
+    """lower-case, remove everything that is not a letter or digit: ''' First.''' -> '''first'''."""
+    return re.sub(r"[^a-z0-9]", "", str(value).lower())
 from mp024.config import load_params, resolve
 
 # Typical "I do not know the value" numbers people type into a spreadsheet.
